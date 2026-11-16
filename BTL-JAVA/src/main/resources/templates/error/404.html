@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Không tìm thấy')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: header}"></div>
+<main class="container notfound">
+    <h1>404</h1>
+    <p th:text="${message} ?: 'Trang bạn tìm không tồn tại.'">Không tìm thấy.</p>
+    <a th:href="@{/}" class="btn btn-primary">Về trang chủ</a>
+</main>
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

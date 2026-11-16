@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${restaurant.name})}"></head>
+<body th:attr="data-lat=${restaurant.latitude},data-lng=${restaurant.longitude}">
+<div th:replace="~{fragments/layout :: header}"></div>
+
+<main class="container detail">
+    <a th:href="@{/}" class="back">← Quay lại tìm kiếm</a>
+    <div class="detail-grid">
+        <article class="card detail-info">
+            <span class="badge" th:text="${restaurant.cuisine}">Món Việt</span>
+            <h1 th:text="${restaurant.name}">Tên quán</h1>
+            <p class="rating">★ <span th:text="${restaurant.rating}">4.5</span></p>
+            <p class="desc" th:text="${restaurant.description}">Mô tả</p>
+            <dl class="info-list">
+                <dt>Mức giá</dt>
+                <dd>
+                    <span th:text="${#numbers.formatInteger(restaurant.priceMin, 1, 'POINT')}">50.000</span>đ –
+                    <span th:text="${#numbers.formatInteger(restaurant.priceMax, 1, 'POINT')}">100.000</span>đ / người
+                </dd>
+                <dt>Địa chỉ</dt>
+                <dd th:text="${restaurant.address}">Địa chỉ</dd>
+                <dt>Giờ mở cửa</dt>
+                <dd th:text="${restaurant.openingHours}">08:00 - 22:00</dd>
+                <dt>Điện thoại</dt>
+                <dd th:text="${restaurant.phone}">0900 000 000</dd>
+            </dl>
+            <a id="dirBtn" class="btn btn-primary" target="_blank" rel="noopener"
+                th:href="${'https://www.google.com/maps/dir/?api=1&destination=' + restaurant.latitude + ',' + restaurant.longitude}">
+                🧭 Chỉ đường (Google Maps)
+            </a>
+        </article>
+        <div id="detailMap" class="map card"></div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    (function () {
+        var lat = parseFloat(document.body.dataset.lat);
+        var lng = parseFloat(document.body.dataset.lng);
+        var map = L.map('detailMap').setView([lat, lng], 16);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19, attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+        L.marker([lat, lng]).addTo(map);
+    })();
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const dirBtn = document.getElementById('dirBtn');
+        if (!dirBtn) return;
+
+        // Lấy tọa độ từ sessionStorage (nếu bạn đã bấm "Dùng vị trí của tôi" ở trang chủ)
+        // Nếu chưa, lấy tọa độ mặc định từ thẻ body của trang chủ hoặc cấu hình sẵn
+        const savedLat = sessionStorage.getItem('user_lat');
+        const savedLng = sessionStorage.getItem('user_lng');
+
+        // Hoặc nếu bạn muốn dùng tọa độ mặc định của Hà Nội / cấu hình chung (ví dụ: 20.98, 105.78 hoặc lấy từ server)
+        const originLat = savedLat || '20.96667'; 
+        const originLng = savedLng || '105.78333';
+
+        // Lấy sẵn link hiện tại (đã có destination)
+        const currentHref = dirBtn.getAttribute('href');
+        
+        // Gắn thêm tham số &origin=... vào đường dẫn Google Maps
+        dirBtn.setAttribute('href', currentHref + '&origin=' + originLat + ',' + originLng);
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const dirBtn = document.getElementById('dirBtn');
+        if (!dirBtn) return;
+
+        // Lấy tọa độ từ sessionStorage (nếu bạn đã bấm "Dùng vị trí của tôi" ở trang chủ)
+        // Nếu chưa, lấy tọa độ mặc định từ thẻ body của trang chủ hoặc cấu hình sẵn
+        const savedLat = sessionStorage.getItem('user_lat');
+        const savedLng = sessionStorage.getItem('user_lng');
+
+        const originLat = savedLat || '20.978'; 
+        const originLng = savedLng || '105.787';
+
+        // Lấy sẵn link hiện tại (đã có destination)
+        const currentHref = dirBtn.getAttribute('href');
+        
+        // Gắn thêm tham số &origin=... vào đường dẫn Google Maps
+        dirBtn.setAttribute('href', currentHref + '&origin=' + originLat + ',' + originLng);
+    });
+</script>
+</body>
+</html>

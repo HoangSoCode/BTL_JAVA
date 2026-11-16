@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title} + ' · Ăngìxemđi'">Ăngìxemđi</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="site-header" th:fragment="header">
+    <div class="container header-inner">
+        <a class="brand" th:href="@{/}"><span class="brand-icon">🍜</span> Ăngìxemđi</a>
+        <span class="tagline">Tìm quán ngon gần bạn, đúng túi tiền</span>
+    </div>
+</header>
+<footer class="site-footer" th:fragment="footer">
+    <div class="container">© 2026 Ăngìxemđi </div>
+</footer>
+</body>
+</html>

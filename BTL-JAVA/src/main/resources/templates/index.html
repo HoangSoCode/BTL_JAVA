@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Tìm nhà hàng lân cận')}"></head>
+<body th:attr="data-lat=${defaultLat},data-lng=${defaultLng},data-radius=${defaultRadius},data-max-radius=${maxRadius}">
+
+<div th:replace="~{fragments/layout :: header}"></div>
+
+<main class="container">
+    <section class="hero">
+        <h1>Hôm nay ăn gì?</h1>
+        <p>Lọc theo <strong>mức giá</strong> và <strong>khoảng cách</strong> để tìm nhà hàng phù hợp quanh bạn.</p>
+    </section>
+
+    <div class="layout">
+        <!-- Bộ lọc -->
+        <aside class="filters card">
+            <form id="searchForm" autocomplete="off">
+                <div class="field">
+                    <label for="keyword">Tìm kiếm</label>
+                    <div class="search-suggest-wrap">
+                        <input type="search" id="keyword" name="keyword" placeholder="Tên quán, món, địa chỉ...">
+                        <div id="searchSuggestions" class="search-suggestions" hidden></div>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Vị trí của bạn</label>
+                    <div class="location-box">
+                        <span id="locationLabel" class="location-label"></span>
+                        <button type="button" id="btnLocate" class="btn btn-outline btn-sm">📍 Dùng vị trí của tôi</button>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="radiusKm">Khoảng cách tối đa: <strong id="radiusText">5 km</strong></label>
+                    <input type="range" id="radiusKm" name="radiusKm" min="0.5" max="25" step="0.5" value="5">
+                    <label class="check"><input type="checkbox" id="noRadius"> Không giới hạn khoảng cách</label>
+                </div>
+
+                <div class="field">
+                    <label>Mức giá / người (VNĐ)</label>
+                    <div class="chips" id="priceChips">
+                        <button type="button" class="chip" data-min="" data-max="">Tất cả</button>
+                        <button type="button" class="chip" data-min="0" data-max="100000">&lt; 100k</button>
+                        <button type="button" class="chip" data-min="100000" data-max="250000">100k – 250k</button>
+                        <button type="button" class="chip" data-min="250000" data-max="500000">250k – 500k</button>
+                        <button type="button" class="chip" data-min="500000" data-max="">&gt; 500k</button>
+                    </div>
+                    <div class="price-inputs">
+                        <input type="number" id="minPrice" name="minPrice" min="0" step="10000" placeholder="Từ">
+                        <span>–</span>
+                        <input type="number" id="maxPrice" name="maxPrice" min="0" step="10000" placeholder="Đến">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="cuisine">Loại ẩm thực</label>
+                    <select id="cuisine" name="cuisine"><option value="">Tất cả</option></select>
+                </div>
+
+                <div class="field">
+                    <label for="minRating">Đánh giá</label>
+                    <select id="minRating" name="minRating">
+                        <option value="">Bất kỳ</option>
+                        <option value="max:3.5">3.5★ trở xuống</option>
+                        <option value="3.5">3.5★ trở lên</option>
+                        <option value="4">4.0★ trở lên</option>
+                        <option value="4.5">4.5★ trở lên</option>
+                    </select>
+                </div>
+
+                <div class="actions">
+                    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                    <button type="button" id="btnReset" class="btn btn-ghost">Đặt lại</button>
+                </div>
+            </form>
+        </aside>
+
+        <!-- Kết quả -->
+        <section class="results">
+            <div class="results-bar card">
+                <div id="resultSummary" class="summary">Đang tải...</div>
+                <div class="sort">
+                    <label for="sort">Sắp xếp</label>
+                    <select id="sort" name="sort">
+                        <option value="distance">Gần nhất</option>
+                        <option value="price_asc">Giá thấp → cao</option>
+                        <option value="price_desc">Giá cao → thấp</option>
+                        <option value="rating">Đánh giá cao nhất</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="map" class="map card" aria-label="Bản đồ nhà hàng"></div>
+            <div id="alertBox" class="alert" hidden></div>
+            <div id="resultList" class="grid"></div>
+            <nav id="pagination" class="pagination" aria-label="Phân trang"></nav>
+        </section>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+<!-- Bảng quảng cáo poster -->
+<div id="adModal" class="ad-modal" role="dialog" aria-modal="true" aria-label="Quảng cáo"
+     onclick="if(event.target===this) this.style.display='none'">
+    <div class="ad-wrapper">
+        <button type="button" id="btnCloseAd" class="ad-close-pill"
+                onclick="document.getElementById('adModal').style.display='none'">✕ Đóng</button>
+        <img src="/images/banner-qc.jpg" alt="Khuyến mãi hôm nay" class="ad-poster">
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>
